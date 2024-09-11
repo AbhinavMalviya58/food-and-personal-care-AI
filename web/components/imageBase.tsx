@@ -20,28 +20,32 @@ import { Base64 } from "js-base64";
 
 export const SubmitType = z.object({
   image: z.string().optional(),
-  question: z.string().min(1, "Question is required"),
+  prompt: z.string().min(1, "Question is required"),
 });
 
 const ImageBase: React.FC = () => {
   const [base64Image, setBase64Image] = useState<string | undefined>(undefined);
+  const [image, setImage] = useState<string | undefined>(undefined);
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
   const [isPending, setIsPending] = useState(false);
+  const [response, setResponse] = useState<string | undefined>();
 
   const form = useForm<z.infer<typeof SubmitType>>({
     resolver: zodResolver(SubmitType),
     defaultValues: {
       image: undefined,
-      question: "",
+      prompt: "",
     },
   });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
+    console.log("File:", file);
     if (file) {
       const reader = new FileReader();
-      
+
       reader.onloadend = () => {
         if (typeof reader.result === "string") {
           setBase64Image(reader.result);
@@ -51,8 +55,9 @@ const ImageBase: React.FC = () => {
           console.log("Is valid base64:", Base64.isValid(base64String));
         }
       };
-      
+
       reader.readAsDataURL(file);
+      // setImage(file);
     } else {
       setBase64Image(undefined);
       form.setValue("image", undefined);
@@ -63,23 +68,24 @@ const ImageBase: React.FC = () => {
     setIsPending(true);
     setError(undefined);
     setSuccess(undefined);
-    
+
     console.log("Submitting values:", values);
-    
+
     try {
-      const response = await fetch("http://localhost:3000/api/test", {
-        body: JSON.stringify(values),
+      const response = await fetch("http://localhost:3000/api/prompt/text", {
+        body: JSON.stringify(values.prompt),
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         }
       });
-      
+
       const data = await response.json();
 
       if (response.ok) {
         setSuccess("Data submitted successfully");
+        setResponse(data.result);
       } else {
         throw new Error(data.error || "Failed to submit data");
       }
@@ -91,7 +97,7 @@ const ImageBase: React.FC = () => {
   };
 
   useEffect(() => {
-    const subscription = form.watch((value, { name, type }) => 
+    const subscription = form.watch((value, { name, type }) =>
       console.log(name, type, value)
     );
     return () => subscription.unsubscribe();
@@ -127,7 +133,7 @@ const ImageBase: React.FC = () => {
             )}
             <FormField
               control={form.control}
-              name="question"
+              name="prompt"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Question</FormLabel>
@@ -144,6 +150,7 @@ const ImageBase: React.FC = () => {
             </Button>
           </form>
         </Form>
+        {response && <div className="text-gray-500">{response}</div>}
       </Card>
       {error && <div className="text-red-500">{error}</div>}
       {success && <div className="text-green-500">{success}</div>}
