@@ -17,6 +17,8 @@ import {
 } from "./ui/form";
 import { z } from "zod";
 import { Base64 } from "js-base64";
+import MarkdownContent from "./markdown-content";
+import { DUMMY_PROMPT } from "@/constants/prompt";
 
 export const SubmitType = z.object({
   image: z.string().optional(),
@@ -103,6 +105,8 @@ const ImageBase: React.FC = () => {
     return () => subscription.unsubscribe();
   }, [form]);
 
+  console.log("Dumb prompt", DUMMY_PROMPT);
+
   return (
     <div className="flex flex-col gap-10">
       <Card className="flex gap-4 p-4">
@@ -150,10 +154,12 @@ const ImageBase: React.FC = () => {
             </Button>
           </form>
         </Form>
-        {response && <div className="text-gray-500">{response}</div>}
       </Card>
       {error && <div className="text-red-500">{error}</div>}
       {success && <div className="text-green-500">{success}</div>}
+      {<div className="text-gray-500">
+        <MarkdownContent markdown={DUMMY_PROMPT} />
+      </div>}
     </div>
   );
 };
