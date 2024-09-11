@@ -9,7 +9,7 @@ import "./markdown-content.styles.css";
 const MarkdownContent = ({
   markdown
 }: {
-  markdown: any;
+  markdown: string;
 }) => {
   console.log("Markdown", markdown);
 
