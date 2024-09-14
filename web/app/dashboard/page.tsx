@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { FaRunning } from "react-icons/fa";
+import InputRender from "./input-render";
 
 const FEATURE_CARDS = [
   {
@@ -49,7 +50,7 @@ const Dashboard = () => {
   return (
     <div className="flex p-8 gap-4 h-screen bg-app-dark">
       <div className="flex flex-col items-center w-2/3 gap-36 mx-auto">
-        <div className="flex flex-col items-center gap-16">
+        <div className="flex flex-1 flex-col items-center gap-16">
           <h1 className="flex gap-3 text-star-white cursor-pointer text-5xl font-secondary">
             Better <span className="text-app-primary flex gap-2 items-center">Health <FaRunning size={48} /></span>
           </h1>
@@ -67,15 +68,13 @@ const Dashboard = () => {
             }
           </div>
         </div>
-        {
-          selectedCard && (
-            <div
-              className={`flex max-w-96 min-h-24 items-center gap-3 text-[#F2F4F6] cursor-pointer p-5 rounded-lg border-4 border-[#2B2D31] hover:border-[#404249]`}
-            >
-              <p className="text-center text-base">{selectedCard.description}</p>
-            </div>
-          )
-        }
+        <div className="w-full flex justify-end items-end gap-4 min-h-64 p-8">
+          {
+            selectedCard && (
+              <InputRender id={selectedCard.id} />
+            )
+          }
+        </div>
         {/* <div className="flex flex-col items-center justify-center w-24 h-12 bg-[#28b463] hover:shadow-sm hover:bg-[#28b463]/90 cursor-pointer rounded-md text-[#18392A] text-base uppercase font-bold">
           Submit
         </div> */}
