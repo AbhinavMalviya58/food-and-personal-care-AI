@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+//import { useState } from 'react';
+//import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 // import { signIn } from 'next-auth/react';
 import Link from 'next/link';
@@ -17,13 +17,13 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
 
 
-import GoogleIcon from '@/constants/icons/google-icon.svg';
-import Image from 'next/image';
+//import GoogleIcon from '@/lib/constants/icons8-google.png';
+//import Image from 'next/image';
 import Error from '@/components/ui/error';
 import PasswordInput from '@/components/ui/password-input';
+import { useState } from 'react';
 
 type SigninFormData = {
   email: string;
@@ -38,12 +38,11 @@ const SigninForm = () => {
   } = useForm<SigninFormData>();
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isGoogleSignInSubmitting, setIsGoogleSignInSubmitting] =
-    useState(false);
+  const [isGoogleSignInSubmitting, setIsGoogleSignInSubmitting] =useState(false);
 
-  const searchParams = useSearchParams();
-  const redirect = searchParams.get('redirect');
-  const router = useRouter();
+  //const searchParams = useSearchParams();
+  //const redirect = searchParams.get('redirect');
+  //const router = useRouter();
 
   const onSubmit = async (data: SigninFormData) => {
     console.log(data);
@@ -143,13 +142,7 @@ const SigninForm = () => {
               {isGoogleSignInSubmitting ? (
                 <Loader2 className='mr-2 h-4 w-4 animate-spin' />
               ) : (
-                <Image
-                  src={GoogleIcon}
-                  alt='Google Icon'
-                  width={20}
-                  height={20}
-                  className='mr-2'
-                />
+                <p>Icon</p>
               )}
               Sign in with Google
             </Button>

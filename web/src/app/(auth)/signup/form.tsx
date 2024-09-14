@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 // import { signIn } from 'next-auth/react';
 import Link from 'next/link';
@@ -40,8 +40,8 @@ const SignupForm = () => {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const searchParams = useSearchParams();
-  const redirect = searchParams.get('redirect');
+  //const searchParams = useSearchParams();
+  //const redirect = searchParams.get('redirect');
   const router = useRouter();
 
   useEffect(() => {
