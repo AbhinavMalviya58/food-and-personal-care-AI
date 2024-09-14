@@ -49,7 +49,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex p-8 gap-4 h-screen bg-app-dark">
+    <div className="flex p-8 gap-4 h-screen">
       <div className="flex flex-col items-center w-2/3 gap-36 mx-auto">
         <div className="flex flex-1 flex-col items-center gap-16">
           <h1 className="flex gap-3 text-star-white cursor-pointer text-5xl font-secondary">
