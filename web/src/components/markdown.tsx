@@ -4,7 +4,7 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-import "./markdown-content.styles.css";
+//import "./markdown-content.styles.css";
 
 const MarkdownContent = ({
   markdown

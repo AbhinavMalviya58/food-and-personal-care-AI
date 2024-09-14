@@ -24,6 +24,8 @@
     "js-base64": "^3.7.7",
     "lucide-react": "^0.439.0",
     "next": "14.2.9",
+    "@uploadthing/react": "^6.8.0",
+    "axios": "^1.7.7",
     "next-themes": "^0.3.0",
     "react": "^18",
     "react-animated-cursor": "^2.11.2",
@@ -34,7 +36,7 @@
     "remark-gfm": "^4.0.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.23.8"
+    "uploadthing": "^6.13.3"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -42,18 +44,9 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
-    "eslint-config-next": "14.2.9",
-    "firebase-tools": "^13.16.0",
+    "eslint-config-next": "14.2.10",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
-  },
-  "description": "This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).",
-  "main": "index.js",
-  "directories": {
-    "lib": "lib"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  }
 }
