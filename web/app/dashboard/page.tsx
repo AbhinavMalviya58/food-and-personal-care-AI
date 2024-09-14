@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { FaRunning } from "react-icons/fa";
 import InputRender from "./input-render";
+import { ModeToggle } from "@/components/toggle";
 
 const FEATURE_CARDS = [
   {
@@ -53,7 +54,8 @@ const Dashboard = () => {
         <div className="flex flex-1 flex-col items-center gap-16">
           <h1 className="flex gap-3 text-star-white cursor-pointer text-5xl font-secondary">
             Better <span className="text-app-primary flex gap-2 items-center">Health <FaRunning size={48} /></span>
-          </h1>
+          <ModeToggle/></h1>
+          
           <div className="flex flex-wrap gap-6 items-center justify-center">
             {
               FEATURE_CARDS.map((card) => (

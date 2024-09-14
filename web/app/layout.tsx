@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
-
+//import AnimatedCursor from "react-animated-cursor"
+import {AnimatedCursor} from "@/components/animatedCursor";
+import { ThemeProvider } from "@/components/theme-provider";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -37,11 +39,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.className} ${secondary.variable} antialiased`}
-      >
-        {children}
+      ><ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+        <AnimatedCursor
+        />
+        {children}</ThemeProvider>
       </body>
+      
     </html>
   );
 }
