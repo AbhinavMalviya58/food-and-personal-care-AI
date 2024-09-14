@@ -5,6 +5,8 @@ import "@uploadthing/react/styles.css";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "./api/uploadthing/core";
+import { ThemeProvider } from "@/component/theme-provider";
+import { ModeToggle } from "@/component/toggle";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} bg-[#212122] antialiased`}
       >
         <NextSSRPlugin
           /**
@@ -41,7 +43,15 @@ export default function RootLayout({
            */
           routerConfig={extractRouterConfig(ourFileRouter)}
         />
-        {children}
+        <ThemeProvider
+        enableSystem
+        attribute="class"
+        defaultTheme="system"
+        disableTransitionOnChange
+        >
+          <ModeToggle/>
+                    {children}
+        </ThemeProvider>
       </body>
     </html>
   );
