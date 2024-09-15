@@ -6,6 +6,7 @@ import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { ourFileRouter } from "./api/uploadthing/core";
 import { extractRouterConfig } from "uploadthing/server";
 import "@uploadthing/react/styles.css";
+import { AnimatedCursor } from "@/components/animatedCursor";
 
 
 const geistSans = localFont({
@@ -49,6 +50,7 @@ export default function RootLayout({
            */
           routerConfig={extractRouterConfig(ourFileRouter)}
         />
+        <AnimatedCursor/>
         {children}
         </ThemeProvider>
       </body>
