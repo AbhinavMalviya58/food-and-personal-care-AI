@@ -1,4 +1,3 @@
-
 import { genAI } from "@/lib/constants/gemine";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -8,7 +7,10 @@ export async function POST(req: NextRequest) {
     const { prompt, imageURL } = await req.json();
 
     if (!prompt || !imageURL) {
-      return NextResponse.json({ error: "Invalid request data" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid request data" },
+        { status: 400 }
+      );
     }
 
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -35,6 +37,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: textResult }, { status: 200 });
   } catch (error) {
     console.error("Error processing the image:", error);
-    return NextResponse.json({ error: "Error processing the image" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Error processing the image" },
+      { status: 500 }
+    );
   }
 }

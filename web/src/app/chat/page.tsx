@@ -1,30 +1,24 @@
 'use client';
 
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import MarkdownContent from "@/components/ui/markdown-content";
+import { getChatById, updateChatById } from "@/firebase/chat-db-requests";
 
-import { DUMMY_CHAT } from "@/lib/constants/chat-messages";
-import { DUMMY_PROMPT } from "@/lib/constants/prompt";
 import { WEB_APP_NAME } from "@/lib/constants/web";
 import { Chat, Sender } from "@/lib/types/chat";
 
 import { Paperclip, SendHorizonalIcon } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-interface ChatConversationProps {
-  params: {
-    id: string;
-  };
-}
-
-const ChatConversation: React.FC<ChatConversationProps> = ({
-  params,
-}) => {
+const ChatConversation = () => {
   const [chat, setChat] = useState<Chat>();
   const [message, setMessage] = useState<string>("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const params = useSearchParams();
+  const id = params.get("id");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(e.target.value);
@@ -37,31 +31,48 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
   };
 
   const fetchChat = async (id: string) => {
-    const response = await fetch(`/api/chat/${id}`);
-    const data = await response.json();
-    setChat(data);
+    const response = await getChatById(id);
+    setChat(response);
   }
 
   const onSubmit = async () => {
+    setIsProcessing(true);
     if (!message) {
+      setIsProcessing(false);
       return;
     }
 
-    // const response = await fetch(`/api/chat/${id}/message`, {
-    //   method: "POST",
-    //   body: JSON.stringify({
-    //     content: message,
-    //   }),
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    // });
+    const response = await fetch("/api/prompt/text", {
+      method: "POST",
+      body: JSON.stringify({
+        prompt: message,
+        // imageURL: image,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-    // if (!response.ok) {
-    //   return;
-    // }
+    if (!response.ok) {
+      setIsProcessing(false);
+      return;
+    }
 
-    // const result = await response.json();
+    const data = await response.json();
+
+    await updateChatById(chat?.id || "", {
+      messages: [
+        ...chat?.messages!,
+        {
+          sender: Sender.User,
+          content: message,
+        },
+        {
+          sender: Sender.AI,
+          content: data.message,
+        }
+      ]
+    });
 
     setChat({
       id: chat?.id || "",
@@ -75,23 +86,21 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
         },
         {
           sender: Sender.AI,
-          content: DUMMY_PROMPT, // result.message
+          content: data.message,
         }
       ]
     });
 
     setMessage("");
 
+    setIsProcessing(false);
+
     scrollToBottom();
   };
 
   useEffect(() => {
-    if (!params.id) {
-      setChat(DUMMY_CHAT);
-    }
-
-    fetchChat(params.id as string);
-  }, [params.id]);
+    fetchChat(id as string);
+  }, [id]);
 
   useEffect(() => {
     scrollToBottom();
@@ -151,6 +160,11 @@ const ChatConversation: React.FC<ChatConversationProps> = ({
           <div ref={messagesEndRef} />
         </div>
         <div className="w-full lg:w-[60%] flex flex-col gap-4">
+          {isProcessing && (
+            <div className="flex items-center justify-center">
+              <span className="text-white">Processing...</span>
+            </div>
+          )}
           <div className="flex gap-4 items-end">
             <Button
               onClick={() => { }}

@@ -11,8 +11,6 @@ const MarkdownContent = ({
 }: {
   markdown: string;
 }) => {
-  console.log("Markdown", markdown);
-
   return (
     <div className="markdown-container">
       <ReactMarkdown remarkPlugins={[remarkGfm]}>

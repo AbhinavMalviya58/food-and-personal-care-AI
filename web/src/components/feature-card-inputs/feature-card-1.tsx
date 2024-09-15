@@ -1,7 +1,66 @@
+'use client';
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { createChat } from "@/firebase/chat-db-requests";
+import { Sender } from "@/lib/types/chat";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const FeatureCard1 = () => {
+  const [image, setImage] = useState<File | null>(null);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [prompt, setPrompt] = useState<string>("");
+  const router = useRouter();
+
+  const handlePromptChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPrompt(e.target.value);
+  }
+
+  const onSubmit = async () => {
+    setIsProcessing(true);
+    const response = await fetch("/api/prompt/text", {
+      method: "POST",
+      body: JSON.stringify({
+        prompt,
+        // imageURL: image,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      setIsProcessing(false);
+      return;
+    }
+
+    const data = await response.json();
+
+    const chatId = await createChat({
+      title: "Food Ingredients",
+      userId: "test-user-id",
+      messages: [
+        {
+          sender: Sender.User,
+          content: prompt,
+        },
+        {
+          sender: Sender.AI,
+          content: data.message,
+        }
+      ]
+    });
+
+    if (!chatId) {
+      setIsProcessing(false);
+      return;
+    }
+
+    setIsProcessing(false);
+    router.push(`/chat?id=${chatId}`);
+  };
+
   return (
     <div className="w-full flex flex-col gap-4">
       <div className="flex gap-4 items-center">
@@ -15,14 +74,14 @@ const FeatureCard1 = () => {
           className="flex-1"
           placeholder="e.g. apple, banana, etc."
           type="text"
-          value=""
-          onChange={() => { }}
+          value={prompt}
+          onChange={handlePromptChange}
         />
         <Button
-          onClick={() => { }}
+          onClick={onSubmit}
           variant="app-primary"
         >
-          Submit
+          {isProcessing ? "Processing..." : "Submit"}
         </Button>
       </div>
       <div>
