@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
+// import { useToast } from '@/hooks/use-toast';
 import Error from '@/components/ui/error';
 import PasswordInput from '@/components/ui/password-input';
 
@@ -29,7 +29,7 @@ type SignupFormData = {
 };
 
 const SignupForm = () => {
-  const toast = useToast;
+  // const toast = useToast;
 
   const {
     register,
@@ -54,44 +54,7 @@ const SignupForm = () => {
 
   const onSubmit = async (data: SignupFormData) => {
     console.log(data);
-    // setIsSubmitting(true);
-    // const { fullName, email, password, confirmPassword } = data;
-    // if (password !== confirmPassword) {
-    //   setError('Passwords do not match');
-    //   setIsSubmitting(false);
-    //   return;
-    // }
-    // const hashedPassword = await bcrypt.hash(password, 10);
-    // const res = await fetch('/api/auth/signup', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ fullName, email, hashedPassword }),
-    // });
-    // if (res.ok) {
-    //   const result = await signIn('credentials', {
-    //     email,
-    //     password,
-    //     redirect: false,
-    //   });
-    //   if (result?.error) {
-    //     setError(result.error);
-    //   } else {
-    //     if (redirect) {
-    //       router.push(redirect);
-    //     } else {
-    //       router.push('/');
-    //     }
-    //     // toast({
-    //     //   title: 'Sign in successful',
-    //     //   description: 'You have successfully signed in to your account',
-    //     //   variant: 'success',
-    //     // });
-    //   }
-    // } else {
-    //   const data = await res.json();
-    //   setError(data.message);
-    // }
-    // setIsSubmitting(false);
+  
   };
 
   return (
@@ -144,10 +107,6 @@ const SignupForm = () => {
                     message: 'Password must be at least 8 characters long.',
                     value: 8,
                   },
-                  // pattern: {
-                  //   message: "Password must contain at least one letter, one number, one special character, and be at least 8 characters long.",
-                  //   value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-                  // },
                 })}
               />
               {errors.password && <Error text={errors.password.message!} />}
