@@ -7,7 +7,7 @@ import { ourFileRouter } from "./api/uploadthing/core";
 import { extractRouterConfig } from "uploadthing/server";
 import "@uploadthing/react/styles.css";
 import { AnimatedCursor } from "@/components/animatedCursor";
-
+import { Inter, Poppins } from "next/font/google";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -18,6 +18,15 @@ const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
   weight: "100 900",
+});
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+const secondary = Poppins({
+  variable: "--font-secondary",
+  subsets: ["latin"],
+  weight: "800",
 });
 
 export const metadata: Metadata = {
@@ -31,27 +40,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en"> 
+    <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      > 
-      <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
-       <NextSSRPlugin
-          /**
-           * The `extractRouterConfig` will extract **only** the route configs
-           * from the router to prevent additional information from being
-           * leaked to the client. The data passed to the client is the same
-           * as if you were to fetch `/api/uploadthing` directly.
-           */
-          routerConfig={extractRouterConfig(ourFileRouter)}
-        />
-        <AnimatedCursor/>
-        {children}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.className} ${secondary.variable} antialiased`}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <NextSSRPlugin
+            /**
+             * The `extractRouterConfig` will extract **only** the route configs
+             * from the router to prevent additional information from being
+             * leaked to the client. The data passed to the client is the same
+             * as if you were to fetch `/api/uploadthing` directly.
+             */
+            routerConfig={extractRouterConfig(ourFileRouter)}
+          />
+          <AnimatedCursor />
+          {children}
         </ThemeProvider>
       </body>
 
