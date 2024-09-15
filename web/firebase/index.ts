@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
@@ -10,12 +10,19 @@ const firebaseConfig = {
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  measurementId: process.env.REACT_APP_FIREBASE_measurementId,
+  measurementId: process.env.REACT_APP_FIREBASE_measurementId
 };
+console.log(firebaseConfig,"name") 
+// const firebaseApp =
+//   getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+
+//   export const firebaseAuth = getAuth(firebaseApp);
 
 const firebaseApp = initializeApp(firebaseConfig);
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-export const firebaseAuth = getAuth(firebaseApp);
+// const app = initializeApp(firebaseConfig);
+const firebaseAuth = getAuth(firebaseApp);
 
-export const firebaseDb = getFirestore(firebaseApp);
+export {firebaseApp,  firebaseAuth}
+
+// export const firebaseAuth = getAuth(firebaseApp);
+// export const firebaseDb = getFirestore(firebaseApp);
