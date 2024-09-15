@@ -9,7 +9,7 @@ import { Loader2 } from 'lucide-react';
 import { signInWithGoogle } from '@/firebase/auth';
 import { createSession } from '@/actions/auth-actions';
 import Link from 'next/link';
-import GoogleIcon from '@/constants/icons/google-icon.svg';
+import GoogleIcon from '@/lib/constants/icons/google-icon.svg';
 import Image from 'next/image';
 import PasswordInput from '@/components/ui/password-input';
 import Error from '@/components/ui/error';

@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { HOME_ROUTE, ROOT_ROUTE, SESSION_COOKIE_NAME } from "../constants";
+import { HOME_ROUTE, ROOT_ROUTE, SESSION_COOKIE_NAME } from "./lib/constants/constants";
 
 const protectedRoutes = [HOME_ROUTE];
 
