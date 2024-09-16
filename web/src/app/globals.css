@@ -7,9 +7,15 @@
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+} */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #d8d7d7;
     --foreground: #ededed;
   }
 }
@@ -95,3 +101,4 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
