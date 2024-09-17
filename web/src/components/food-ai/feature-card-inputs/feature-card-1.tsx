@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const FeatureCard1 = () => {
-  const [image, setImage] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [prompt, setPrompt] = useState<string>("");
   const router = useRouter();
@@ -18,7 +17,7 @@ const FeatureCard1 = () => {
   }
 
   const onSubmit = async () => {
-    setIsProcessing(true);
+    setIsProcessing(true)
     const response = await fetch("/api/prompt/text", {
       method: "POST",
       body: JSON.stringify({
@@ -35,7 +34,7 @@ const FeatureCard1 = () => {
       return;
     }
 
-    const data = await response.json();
+    const data = await response.json()
 
     const chatId = await createChat({
       title: "Food Ingredients",
@@ -63,11 +62,16 @@ const FeatureCard1 = () => {
     router.push(`/chat?id=${chatId}`);
   };
 
+  const handleImageUpload = () => {
+    // TODO: Implement image upload functionality
+    console.log("Image upload functionality not yet implemented");
+  };
+
   return (
     <div className="w-full flex flex-col gap-4">
       <div className="flex gap-4 items-center">
         <Button
-          onClick={() => { }}
+          onClick={handleImageUpload}
           variant="app-primary"
         >
           Upload Image

@@ -8,7 +8,7 @@ const FeatureCard3 = () => {
           Click on the button to proceed to the diet plan creation page
         </h1>
         <Button
-          onClick={() => { }}
+          
           variant="app-primary"
         >
           Proceed

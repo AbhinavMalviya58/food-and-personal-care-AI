@@ -30,11 +30,9 @@ type SigninFormProps = {
 const SigninForm = ({ session }: SigninFormProps) => {
   const { register, handleSubmit, formState: { errors } } = useForm<SigninFormData>();
   const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleSignInSubmitting, setIsGoogleSignInSubmitting] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirect = searchParams.get('redirect');
 
   const handleSignIn = async () => {
     setIsGoogleSignInSubmitting(true);
@@ -42,7 +40,8 @@ const SigninForm = ({ session }: SigninFormProps) => {
       const userUid = await signInWithGoogle();
       if (userUid) {
         await createSession(userUid);
-        router.push('/dashboard'); // Redirect to a protected route after sign-in
+        const redirect = searchParams.get('redirect');
+        router.push(redirect || '/dashboard'); // Redirect to the specified route or dashboard
       }
     } catch (err) {
       setError('Google sign-in failed');
@@ -96,10 +95,8 @@ const SigninForm = ({ session }: SigninFormProps) => {
               </div>
               <Button
                 className='w-full'
-                disabled={isSubmitting}
                 onClick={handleSubmit(onSubmit)}
                 type='submit'>
-                {isSubmitting && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
                 Sign in
               </Button>
               <Button

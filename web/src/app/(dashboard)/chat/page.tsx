@@ -3,22 +3,29 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import MarkdownContent from "@/components/ui/markdown-content";
 import { getChatById, updateChatById } from "@/firebase/chat-db-requests";
 
 import { WEB_APP_NAME } from "@/lib/constants/web";
 import { Chat, Sender } from "@/lib/types/chat";
 
-import { Paperclip, SendHorizonalIcon } from "lucide-react";
+import { SendHorizonalIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { UserChat } from "./userChat";
 import { AiChat } from "./aiChat";
 import ROUTES from "@/lib/constants/routes";
+import { UploadButton } from "@/lib/uploadthing/uploadthing";
+import Image from "next/image";
+//import { Suspense } from 'react';
+
+interface UploadResponse {
+  url: string;
+}
 
 const ChatConversation = () => {
   const [chat, setChat] = useState<Chat | null>(null);
   const [message, setMessage] = useState<string>("");
+  const [imgURL, setImgURL] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [isFetching, setIsFetching] = useState<boolean>(true);
@@ -41,18 +48,27 @@ const ChatConversation = () => {
     setIsFetching(false);
   };
 
+  const handleUploadComplete = (res: UploadResponse[] | null) => {
+    if (res && res.length > 0) {
+      const uploadedImgURL = res[0].url;
+      setImgURL(uploadedImgURL);
+    }
+  };
+
   const handleSubmission = async () => {
-    if (!message.trim()) return;
+    if (!message.trim() && !imgURL) return;
 
     setIsProcessing(true);
 
     try {
-      const response = await fetch("/api/prompt/text", {
+      console.log("Sending to backend:", { prompt: message, imageURL: imgURL });
+
+      const response = await fetch("/api/prompt", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt: message }),
+        body: JSON.stringify({ prompt: message, imageURL: imgURL }),
       });
 
       if (!response.ok) throw new Error("Error submitting message");
@@ -60,9 +76,9 @@ const ChatConversation = () => {
       const data = await response.json();
 
       const updatedMessages = [
-        ...chat?.messages!,
-        { sender: Sender.User, content: message },
-        { sender: Sender.AI, content: data.message },
+        ...(chat?.messages ?? []),
+        { sender: Sender.User, content: message, imageUrl: imgURL || "" },
+        { sender: Sender.AI, content: data.message, imageUrl: "" },
       ];
 
       if (chat?.id) {
@@ -71,6 +87,7 @@ const ChatConversation = () => {
       }
 
       setMessage("");
+      setImgURL(null);
       scrollToBottom();
     } catch (error) {
       console.error("Submission error:", error);
@@ -89,7 +106,7 @@ const ChatConversation = () => {
 
   if (isFetching) {
     return (
-      <div className="flex w-full  h-screen items-center justify-center">
+      <div className="flex w-full bg-[#212121] h-screen items-center justify-center">
         <span>Loading...</span>
       </div>
     );
@@ -128,7 +145,7 @@ const ChatConversation = () => {
                   }`}
               >
                 {message.sender === Sender.User ? (
-                  <UserChat content={message.content} />
+                  <UserChat content={message.content} imageUrl={message.imageUrl} />
                 ) : (
                   <AiChat content={message.content} />
                 )}
@@ -143,21 +160,39 @@ const ChatConversation = () => {
               <span className="text-white">Processing...</span>
             </div>
           )}
-          <div className="flex gap-4 items-end">
-            <Button variant="app-primary">
-              <Paperclip />
+          {/* Input */}
+          <Card className="flex items-center space-x-4 w-full p-4 rounded-lg shadow-lg bg-gray-800">
+            {imgURL && (
+              <div className="relative w-12 h-12 rounded-md overflow-hidden">
+                <Image src={imgURL} layout="fill" objectFit="cover" alt="Uploaded" />
+              </div>
+            )}
+            <div className="flex-grow flex items-center space-x-2">
+              <div className="mt-6"><UploadButton
+                endpoint="imageUploader"
+                onClientUploadComplete={handleUploadComplete}
+                onUploadError={(error: Error) => alert(`Error: ${error.message}`)}
+                className="text-blue-400 hover:text-blue-300 transition-colors"
+              >
+              </UploadButton></div>
+              <Input
+                type="text"
+                value={message}
+                placeholder={`Message ${WEB_APP_NAME}`}
+                onChange={handleChange}
+                className="flex-grow bg-gray-700 text-white border-none rounded-md focus:ring-2 focus:ring-blue-500 transition-all"
+                disabled={isProcessing}
+              />
+            </div>
+            <Button
+              variant="app-primary"
+              onClick={handleSubmission}
+              disabled={isProcessing || (!message.trim() && !imgURL)}
+              className="bg-blue-500 hover:bg-blue-600 text-white rounded-full p-2 transition-colors"
+            >
+              <SendHorizonalIcon className="w-5 h-5" />
             </Button>
-            <Input
-              className="flex-1"
-              onChange={handleChange}
-              placeholder={`Message ${WEB_APP_NAME}`}
-              value={message}
-              disabled={isProcessing}
-            />
-            <Button variant="app-primary" onClick={handleSubmission}>
-              <SendHorizonalIcon />
-            </Button>
-          </div>
+          </Card>
         </div>
       </div>
     </div>

@@ -1,7 +1,29 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 const FeatureCard2 = () => {
+  const [condition, setCondition] = useState("Diabetes");
+  const [ingredients, setIngredients] = useState("");
+
+  const handleConditionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCondition(e.target.value);
+  };
+
+  const handleIngredientsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIngredients(e.target.value);
+  };
+
+  const handleImageUpload = () => {
+    // TODO: Implement image upload functionality
+    console.log("Image upload functionality not yet implemented");
+  };
+
+  const handleSubmit = () => {
+    // TODO: Implement submit functionality
+    console.log("Submit functionality not yet implemented");
+  };
+
   return (
     <div className="w-full flex flex-col gap-4">
       <div className="flex gap-4 items-center">
@@ -10,13 +32,13 @@ const FeatureCard2 = () => {
           className="flex-1"
           placeholder="e.g. diabetes, high blood pressure, etc."
           type="text"
-          value="Diabetes"
-          onChange={() => { }}
+          value={condition}
+          onChange={handleConditionChange}
         />
       </div>
       <div className="flex gap-4 items-center">
         <Button
-          onClick={() => { }}
+          onClick={handleImageUpload}
           variant="app-primary"
         >
           Upload Image
@@ -25,11 +47,11 @@ const FeatureCard2 = () => {
           className="flex-1"
           placeholder="e.g. apple, banana, etc."
           type="text"
-          value=""
-          onChange={() => { }}
+          value={ingredients}
+          onChange={handleIngredientsChange}
         />
         <Button
-          onClick={() => { }}
+          onClick={handleSubmit}
           variant="app-primary"
         >
           Submit
