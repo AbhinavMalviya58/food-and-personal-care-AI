@@ -18,5 +18,3 @@ export default function middleware(request: NextRequest) {
     return NextResponse.redirect(absoluteURL.toString());
   }
 }
-
-
