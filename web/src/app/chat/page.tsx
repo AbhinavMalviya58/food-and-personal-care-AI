@@ -92,11 +92,11 @@ const ChatConversation = () => {
 
   return (
     <div
-      className="flex py-8 gap-4 bg-[#212121] h-screen w-full bg-app-dark"
+      className="flex py-8 gap-4 bg-[#212121] h-screen w-4/5 bg-app-dark"
       onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSubmission()}
     >
       <div className="flex flex-col w-full items-center gap-8 mx-auto">
-        <div className="w-full lg:w-[60%]">
+        <div className="w-full lg:w-[80%]">
           <h1 className="text-center text-star-white cursor-pointer text-3xl font-secondary">
             {chat.title}
           </h1>
