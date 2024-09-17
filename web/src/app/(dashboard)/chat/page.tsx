@@ -10,16 +10,19 @@ import { WEB_APP_NAME } from "@/lib/constants/web";
 import { Chat, Sender } from "@/lib/types/chat";
 
 import { Paperclip, SendHorizonalIcon } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { UserChat } from "./userChat";
 import { AiChat } from "./aiChat";
+import ROUTES from "@/lib/constants/routes";
 
 const ChatConversation = () => {
   const [chat, setChat] = useState<Chat | null>(null);
   const [message, setMessage] = useState<string>("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [isFetching, setIsFetching] = useState<boolean>(true);
+  const router = useRouter();
   const params = useSearchParams();
   const id = params.get("id");
 
@@ -32,8 +35,10 @@ const ChatConversation = () => {
   };
 
   const fetchChat = async (id: string) => {
+    setIsFetching(true);
     const response = await getChatById(id);
     if (response) setChat(response);
+    setIsFetching(false);
   };
 
   const handleSubmission = async () => {
@@ -82,10 +87,23 @@ const ChatConversation = () => {
     scrollToBottom();
   }, [chat]);
 
-  if (!chat) {
+  if (isFetching) {
     return (
       <div className="flex w-full  h-screen items-center justify-center">
-        <span className="text-white">Loading...</span>
+        <span>Loading...</span>
+      </div>
+    );
+  }
+
+  if (!chat) {
+    return (
+      <div className="flex flex-col w-full h-screen items-center justify-center gap">
+        <span>No Chats Found</span>
+        <Button
+          onClick={() => router.replace(ROUTES.DASHBOARD)}
+        >
+          Go to Dashboard
+        </Button>
       </div>
     );
   }
@@ -106,9 +124,8 @@ const ChatConversation = () => {
             {chat.messages.map((message, index) => (
               <div
                 key={index}
-                className={`flex gap-4 items-center ${
-                  message.sender === Sender.User ? "justify-end" : "justify-start"
-                }`}
+                className={`flex gap-4 items-center ${message.sender === Sender.User ? "justify-end" : "justify-start"
+                  }`}
               >
                 {message.sender === Sender.User ? (
                   <UserChat content={message.content} />

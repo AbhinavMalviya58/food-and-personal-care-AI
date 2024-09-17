@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createChat } from "@/firebase/chat-db-requests";
-import { Sender } from "@/lib/types/chat";
+import { ChatType, Sender } from "@/lib/types/chat";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -23,7 +23,7 @@ const FeatureCard1 = () => {
       method: "POST",
       body: JSON.stringify({
         prompt,
-        // imageURL: image,
+        // imageURL: image, // TODO: Add image upload here (If available)
       }),
       headers: {
         "Content-Type": "application/json",
@@ -40,10 +40,12 @@ const FeatureCard1 = () => {
     const chatId = await createChat({
       title: "Food Ingredients",
       userId: "test-user-id",
+      type: ChatType.FOOD_AI,
       messages: [
         {
           sender: Sender.User,
           content: prompt,
+          // TODO: Add imageUrl here (If available)
         },
         {
           sender: Sender.AI,
