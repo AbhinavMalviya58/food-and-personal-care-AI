@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { SESSION_COOKIE_NAME } from '../../lib/constants/constants';
+import { SESSION_COOKIE_NAME } from '@/lib/constants/constants';
 import SigninForm from './form';
 
 export default async function SignInPage() {
