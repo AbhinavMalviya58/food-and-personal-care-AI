@@ -1,4 +1,4 @@
-import { FeatureCard1, FeatureCard2, FeatureCard3, FeatureCard7 } from "@/components/feature-card-inputs";
+import { FeatureCard1, FeatureCard2, FeatureCard3, FeatureCard7 } from "@/components/food-ai/feature-card-inputs";
 
 interface InputRenderProps {
   id: string;
