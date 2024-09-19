@@ -4,6 +4,7 @@ import {
   collection,
   getDocs,
   updateDoc,
+  getDoc,
 } from "firebase/firestore";
 import { db } from "./firebase";
 import { Chat } from "@/lib/types/chat";
@@ -40,4 +41,25 @@ export const getChatsByUserId = async (userId: string) => {
     ...doc.data(),
   })) as Chat[];
   return chats.filter((chat) => chat.userId === userId);
+};
+
+export const getChatsByChatId = async (chatId: string) => {
+  try {
+    const chatDocRef = doc(db, "chats", chatId);
+    const chatSnapshot = await getDoc(chatDocRef);
+
+    if (chatSnapshot.exists()) {
+      const chatData = chatSnapshot.data() as Chat;
+      return {
+        id: chatSnapshot.id,
+        ...chatData
+      };
+    } else {
+      //console.log("No chat found with the given ID");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching chat by ID:", error);
+    throw error;
+  }
 };
