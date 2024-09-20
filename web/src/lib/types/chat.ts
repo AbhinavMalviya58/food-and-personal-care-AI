@@ -19,3 +19,16 @@ export type Chat = {
     imageUrl?: string;
   }[];
 };
+export interface ChatMessage {
+  role: 'model' | 'user'
+  parts: ChatPart[]
+}
+
+export interface ErrorMessage {
+  code: string
+  message: string
+}
+
+export interface ChatPart {
+  text: string
+}
