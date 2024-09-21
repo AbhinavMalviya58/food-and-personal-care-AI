@@ -1,7 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { authRoutes, HOME_ROUTE, protectedRoutes, ROOT_ROUTE, SESSION_COOKIE_NAME } from "./lib/constants/constants";
-
-
+import {
+  authRoutes,
+  HOME_ROUTE,
+  protectedRoutes,
+  ROOT_ROUTE,
+  SESSION_COOKIE_NAME,
+} from "./lib/constants/constants";
 
 export default function middleware(request: NextRequest) {
   const session = request.cookies.get(SESSION_COOKIE_NAME)?.value || "";

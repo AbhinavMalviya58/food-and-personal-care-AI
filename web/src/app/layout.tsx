@@ -8,6 +8,7 @@ import { extractRouterConfig } from "uploadthing/server";
 import "@uploadthing/react/styles.css";
 import { AnimatedCursor } from "@/components/animatedCursor";
 import { Inter, Poppins } from "next/font/google";
+import { AuthContextProvider } from "@/contexts/auth-context.provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -44,26 +45,23 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.className} ${secondary.variable} antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <NextSSRPlugin
-            /**
-             * The `extractRouterConfig` will extract **only** the route configs
-             * from the router to prevent additional information from being
-             * leaked to the client. The data passed to the client is the same
-             * as if you were to fetch `/api/uploadthing` directly.
-             */
-            routerConfig={extractRouterConfig(ourFileRouter)}
-          />
-          <AnimatedCursor />
-          {children}
-        </ThemeProvider>
+        <AuthContextProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <NextSSRPlugin
+              routerConfig={
+                extractRouterConfig(ourFileRouter)
+              }
+            />
+            <AnimatedCursor />
+            {children}
+          </ThemeProvider>
+        </AuthContextProvider>
       </body>
-
     </html>
   );
 }

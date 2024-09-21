@@ -1,27 +1,23 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
-import {
-  HOME_ROUTE,
-  ROOT_ROUTE,
-  SESSION_COOKIE_NAME,
-} from "@/lib/constants/constants";
+import { SESSION_COOKIE_NAME } from "@/lib/constants/constants";
 
-export async function createSession(uid: string) {
-  cookies().set(SESSION_COOKIE_NAME, uid, {
+export async function createSession(userId: string) {
+  cookies().set(SESSION_COOKIE_NAME, userId, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 60 * 24, // One day
+    maxAge: 30 * 60 * 60 * 24, // 30 days
     path: "/",
   });
+}
 
-  redirect(HOME_ROUTE[0]);
+export async function getSession() {
+  const userId = cookies().get(SESSION_COOKIE_NAME);
+  return userId;
 }
 
 export async function removeSession() {
   cookies().delete(SESSION_COOKIE_NAME);
-
-  redirect(ROOT_ROUTE);
 }
