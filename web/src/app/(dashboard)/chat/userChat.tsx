@@ -22,11 +22,15 @@ export const UserChat = ({
             )
           }
 
-          return (
-            <div className="p-4">
-              <span key={index} className="text-white text-lg">{part.text}</span>
-            </div>
-          )
+          if (part.text && part.text !== "") {
+            return (
+              <div className="p-4">
+                <span key={index} className="text-white text-lg">{part.text}</span>
+              </div>
+            );
+          }
+
+          return null;
         })
       }
     </div>
