@@ -24,6 +24,7 @@ import {
   HOME_ROUTE,
 } from "@/lib/constants/constants";
 import { redirect, useRouter } from "next/navigation";
+import { toast } from "@/hooks/use-toast";
 
 type AuthContextType = {
   getUser: () => Promise<void>;
@@ -62,7 +63,6 @@ export const AuthContextProvider = ({
     setFetchUserPending(true);
     const unsubscribe = onAuthStateChanged(firebaseAuth, async (userFb) => {
       if (userFb) {
-        await createSession(userFb.uid);
         await getUser();
       }
       setFetchUserPending(false);
@@ -90,7 +90,12 @@ export const AuthContextProvider = ({
       });
       await createSession(userCredential.user.uid);
       router.push(HOME_ROUTE);
-    } catch (error) {
+    } catch (error: any) {
+      toast({
+        title: "Sign up failed",
+        description: error?.message,
+        variant: "destructive"
+      })
       console.error("Sign-up failed", error);
     } finally {
       setLoading(false);
@@ -112,7 +117,12 @@ export const AuthContextProvider = ({
       );
       await createSession(userCredential.user.uid);
       router.push(HOME_ROUTE);
-    } catch (error) {
+    } catch (error: any) {
+      toast({
+        title: "Sign in failed",
+        description: error?.message,
+        variant: "destructive"
+      })
       console.error("Sign-in failed", error);
     } finally {
       setLoading(false);
@@ -125,7 +135,12 @@ export const AuthContextProvider = ({
       const result = await signInWithPopup(firebaseAuth, provider);
 
       return result.user;
-    } catch (error) {
+    } catch (error: any) {
+      toast({
+        title: "Google sign in failed",
+        description: error?.message,
+        variant: "destructive"
+      })
       console.error("Google sign-in failed", error);
       throw error;
     }
@@ -159,7 +174,12 @@ export const AuthContextProvider = ({
       await removeSession();
       setUser(null);
       router.push(AUTH_ROUTES[0]);
-    } catch (error) {
+    } catch (error: any) {
+      toast({
+        title: "Sign out failed",
+        description: error?.message,
+        variant: "destructive"
+      })
       console.error("Sign-out failed", error);
     } finally {
       setLoading(false);
@@ -175,7 +195,12 @@ export const AuthContextProvider = ({
       if (userDoc.exists()) {
         setUser(userDoc.data() as User);
       }
-    } catch (error) {
+    } catch (error: any) {
+      toast({
+        title: "Fetching user details failed",
+        description: error?.message,
+        variant: "destructive"
+      })
       console.error("Error fetching user details", error);
     }
   };
