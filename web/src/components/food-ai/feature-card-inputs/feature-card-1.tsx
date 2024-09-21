@@ -2,28 +2,69 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useAuthContext } from "@/contexts/auth-context.provider";
 import { createChat } from "@/firebase/chat-db-requests";
 import { ChatType, Sender } from "@/lib/types/chat";
+import { UploadButton, UploadResponse } from "@/lib/uploadthing/uploadthing";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const FeatureCard1 = () => {
-  const [image, setImage] = useState<File | null>(null);
+  // const [image, setImage] = useState<File | null>(null);
+  const [imgURL, setImgURL] = useState<string | null>(null);
+  // const [imageData, setImageData] = useState<{
+  //   base64String: string;
+  //   mimeType: string;
+  // } | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [prompt, setPrompt] = useState<string>("");
   const router = useRouter();
+
+  const {
+    user,
+  } = useAuthContext();
 
   const handlePromptChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPrompt(e.target.value);
   }
 
+  const handleUploadComplete = (res: UploadResponse[] | null) => {
+    if (res && res.length > 0) {
+      const uploadedImgURL = res[0].url; // Get the first image URL from the response
+      setImgURL(uploadedImgURL);
+    }
+  };
+
+  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+
+  //   if (file) {
+  //     setImage(file);
+
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       const base64String = reader.result as string;
+  //       const mimeType = file.type;
+
+  //       setImageData({
+  //         base64String,
+  //         mimeType
+  //       });
+  //     };
+
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
+
   const onSubmit = async () => {
     setIsProcessing(true);
-    const response = await fetch("/api/prompt/text", {
+
+    const response = await fetch("/api/prompt/explain-ingredients", {
       method: "POST",
       body: JSON.stringify({
         prompt,
-        // imageURL: image, // TODO: Add image upload here (If available)
+        imageUrl: imgURL,
+        mimeType: "image/jpeg",
       }),
       headers: {
         "Content-Type": "application/json",
@@ -39,19 +80,42 @@ const FeatureCard1 = () => {
 
     const chatId = await createChat({
       title: "Food Ingredients",
-      userId: "test-user-id",
+      userId: user?.id ?? "test-user-id",
       type: ChatType.FOOD_AI,
-      messages: [
+      history: [
         {
-          sender: Sender.User,
-          content: prompt,
-          // TODO: Add imageUrl here (If available)
+          role: Sender.User,
+          parts: [
+            {
+              text: `My name is ${user?.name}`,
+            }
+          ]
         },
         {
-          sender: Sender.AI,
-          content: data.message,
-        }
-      ]
+          role: Sender.User,
+          parts: [
+            {
+              fileData: {
+                // mimeType: image?.mimeType!,
+                // fileUri: image?.uri!,
+                fileUri: imgURL!,
+                mimeType: "image/jpeg",
+              },
+            },
+            {
+              text: prompt,
+            }
+          ],
+        },
+        {
+          role: Sender.Model,
+          parts: [
+            {
+              text: data.message,
+            },
+          ],
+        },
+      ],
     });
 
     if (!chatId) {
@@ -66,12 +130,18 @@ const FeatureCard1 = () => {
   return (
     <div className="w-full flex flex-col gap-4">
       <div className="flex gap-4 items-center">
-        <Button
-          onClick={() => { }}
-          variant="app-primary"
-        >
-          Upload Image
-        </Button>
+        {/* <Input
+          className="max-w-[240px]"
+          type="file"
+          onChange={handleImageChange}
+        /> */}
+        <UploadButton
+          endpoint="imageUploader"
+
+          onClientUploadComplete={handleUploadComplete}
+          onUploadError={(error: Error) => alert(`Error: ${error.message}`)}
+          className="text-app-primary hover:text-app-primary/90"
+        />
         <Input
           className="flex-1"
           placeholder="e.g. apple, banana, etc."
@@ -87,9 +157,9 @@ const FeatureCard1 = () => {
         </Button>
       </div>
       <div>
-        <h1 className="text-star-white text-base">
+        <p className="text-star-white text-sm">
           Upload an image of the ingredients list on the packaging of the food item or write down about the ingredients included in the food item.
-        </h1>
+        </p>
       </div>
     </div>
   );

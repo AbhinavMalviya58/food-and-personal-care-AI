@@ -2,6 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useAuthContext } from "@/contexts/auth-context.provider";
 import { getChatsByUserId } from "@/firebase/chat-db-requests";
 import { Chat, ChatType } from "@/lib/types/chat";
 import Link from "next/link";
@@ -13,7 +14,11 @@ const ChatSidebar = () => {
   const [filteredChats, setFilteredChats] = useState<Chat[]>([]);
   const [selectedType, setSelectedType] = useState<ChatType>(ChatType.FOOD_AI);
   const router = useRouter();
-  const userId = "test-user-id"; // TODO: Fetch userId from getUser
+  const {
+    user
+  } = useAuthContext();
+
+  const userId = user?.id;
 
   const fetchChatsByUserId = async (userId: string) => {
     const response = await getChatsByUserId(userId);
@@ -34,6 +39,8 @@ const ChatSidebar = () => {
     if (!userId) return;
     fetchChatsByUserId(userId);
   }, [userId]);
+
+  if (!user) return null; // TODO: Add a loading spinner
 
   return (
     <nav className="w-1/5 bg-[#212121]  shadow-md overflow-y-auto">

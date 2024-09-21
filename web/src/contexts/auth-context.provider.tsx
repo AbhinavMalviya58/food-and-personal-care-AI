@@ -14,7 +14,6 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
-  User,
 } from "firebase/auth";
 import { db, firebaseAuth } from "@/firebase/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
@@ -25,6 +24,7 @@ import {
 } from "@/lib/constants/constants";
 import { redirect, useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
+import { User } from "@/lib/types/user";
 
 type AuthContextType = {
   getUser: () => Promise<void>;
@@ -193,7 +193,10 @@ export const AuthContextProvider = ({
     try {
       const userDoc = await getDoc(doc(db, "users", userId.value));
       if (userDoc.exists()) {
-        setUser(userDoc.data() as User);
+        setUser({
+          ...userDoc.data() as User,
+          id: userDoc.id,
+        });
       }
     } catch (error: any) {
       toast({

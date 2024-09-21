@@ -17,3 +17,22 @@
 .markdown-container p {
   margin: 10px 0;
 }
+
+.markdown-container table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.markdown-container th {
+  background-color: var(--app-primary);
+  border: 1px solid var(--border);
+  padding: 10px 20px;
+}
+
+.markdown-container td {
+  padding: 10px 20px;
+}
+
+.markdown-container tr:nth-child(even) {
+  background-color: var(--gray-1);
+}

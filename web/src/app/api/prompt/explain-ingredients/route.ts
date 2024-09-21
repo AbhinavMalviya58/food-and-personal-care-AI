@@ -1,16 +1,9 @@
 import { genAI } from "@/lib/constants/gemine";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
+export const POST = async (req: NextRequest) => {
   try {
-    const { prompt, imageURL } = await req.json();
-
-    if (!prompt || !imageURL) {
-      return NextResponse.json(
-        { error: "Invalid request data" },
-        { status: 400 }
-      );
-    }
+    const { imageUrl, prompt, mimeType } = await req.json();
 
     const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
@@ -18,7 +11,7 @@ export async function POST(req: NextRequest) {
         "When analyzing a list of ingredients on a product label, break down each component in a friendly, easy-to-understand way, and in a tabular form. Explain whether each ingredient is good, neutral, or harmful for someone. Provide dietary advice in a supportive tone, suggesting healthier alternatives where needed. Always conclude with a summary that gives clear recommendations while keeping the tone positive and helpful. If possible also try to guess the product.",
     });
 
-    const response = await fetch(imageURL);
+    const response = await fetch(imageUrl);
     if (!response.ok) {
       throw new Error("Failed to fetch image");
     }
@@ -29,12 +22,12 @@ export async function POST(req: NextRequest) {
     const image = {
       inlineData: {
         data: imageBase64,
-        mimeType: response.headers.get("content-type") || "image/png",
+        mimeType,
       },
     };
 
     const result = await model.generateContent([prompt, image]);
-    const textResult = await result.response.text();
+    const textResult = result.response.text();
 
     return NextResponse.json({ message: textResult }, { status: 200 });
   } catch (error) {
@@ -44,4 +37,4 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
-}
+};
