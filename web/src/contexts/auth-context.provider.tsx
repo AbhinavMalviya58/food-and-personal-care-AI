@@ -9,21 +9,33 @@ import {
 } from "react";
 import {
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
   User,
 } from "firebase/auth";
 import { db, firebaseAuth } from "@/firebase/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { createSession, getSession, removeSession } from "@/actions/auth-actions";
-import { HOME_ROUTE } from "@/lib/constants/constants";
+import {
+  AUTH_ROUTES,
+  HOME_ROUTE,
+} from "@/lib/constants/constants";
 import { redirect, useRouter } from "next/navigation";
-import { signInWithGoogle } from "@/firebase/auth";
 
 type AuthContextType = {
-  user: User | null;
+  getUser: () => Promise<void>;
   loading: boolean;
+  signInUserWithGoogle: () => Promise<void>;
+  signIn: (
+    userData: {
+      email: string,
+      password: string,
+    }
+  ) => Promise<void>;
+  signOut: () => Promise<void>;
   signUp: (
     userData: {
       name: string,
@@ -31,15 +43,7 @@ type AuthContextType = {
       password: string,
     }
   ) => Promise<void>;
-  signIn: (
-    userData: {
-      email: string,
-      password: string,
-    }
-  ) => Promise<void>;
-  signInUserWithGoogle: () => Promise<void>;
-  signOut: () => Promise<void>;
-  getUser: () => Promise<void>;
+  user: User | null;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -50,16 +54,18 @@ export const AuthContextProvider = ({
   children: ReactNode,
 }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [fetchUserPending, setFetchUserPending] = useState(true);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
+    setFetchUserPending(true);
     const unsubscribe = onAuthStateChanged(firebaseAuth, async (userFb) => {
       if (userFb) {
         await createSession(userFb.uid);
         await getUser();
       }
-      setLoading(false);
+      setFetchUserPending(false);
     });
     return () => unsubscribe();
   }, []);
@@ -83,7 +89,7 @@ export const AuthContextProvider = ({
         email: userData.email,
       });
       await createSession(userCredential.user.uid);
-      router.push("/dashboard");
+      router.push(HOME_ROUTE);
     } catch (error) {
       console.error("Sign-up failed", error);
     } finally {
@@ -105,7 +111,7 @@ export const AuthContextProvider = ({
         userData.password,
       );
       await createSession(userCredential.user.uid);
-      router.push("/dashboard");
+      router.push(HOME_ROUTE);
     } catch (error) {
       console.error("Sign-in failed", error);
     } finally {
@@ -113,11 +119,36 @@ export const AuthContextProvider = ({
     }
   };
 
+  const signInWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(firebaseAuth, provider);
+
+      return result.user;
+    } catch (error) {
+      console.error("Google sign-in failed", error);
+      throw error;
+    }
+  };
+
   const signInUserWithGoogle = async () => {
-    const userId = await signInWithGoogle();
-    if (userId) {
+    const userCredential = await signInWithGoogle();
+
+    if (userCredential) {
+      const userId = userCredential.uid;
+      const userRef = doc(db, "users", userId);
+      const userDoc = await getDoc(userRef);
+
+      if (!userDoc.exists()) {
+        const { displayName, email } = userCredential;
+        await setDoc(userRef, {
+          name: displayName || "",
+          email: email,
+        });
+      }
+
       await createSession(userId);
-      redirect(HOME_ROUTE[0]);
+      redirect(HOME_ROUTE);
     }
   }
 
@@ -127,7 +158,7 @@ export const AuthContextProvider = ({
       await signOut(firebaseAuth);
       await removeSession();
       setUser(null);
-      router.push("/signin");
+      router.push(AUTH_ROUTES[0]);
     } catch (error) {
       console.error("Sign-out failed", error);
     } finally {
@@ -152,13 +183,13 @@ export const AuthContextProvider = ({
   return (
     <AuthContext.Provider
       value={{
-        user,
+        getUser,
         loading,
         signIn,
         signInUserWithGoogle,
         signOut: signOutUser,
         signUp,
-        getUser,
+        user,
       }}
     >
       {children}
