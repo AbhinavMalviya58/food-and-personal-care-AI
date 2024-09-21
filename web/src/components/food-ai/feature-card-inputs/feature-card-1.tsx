@@ -87,14 +87,6 @@ const FeatureCard1 = () => {
           role: Sender.User,
           parts: [
             {
-              text: `My name is ${user?.name}`,
-            }
-          ]
-        },
-        {
-          role: Sender.User,
-          parts: [
-            {
               fileData: {
                 // mimeType: image?.mimeType!,
                 // fileUri: image?.uri!,

@@ -13,6 +13,7 @@ import { useEffect, useRef, useState } from "react";
 import { UserChat } from "./userChat";
 import { AiChat } from "./aiChat";
 import { ROUTES } from "@/lib/constants/constants";
+import { useAuthContext } from "@/contexts/auth-context.provider";
 
 const ChatConversation = () => {
   const [chat, setChat] = useState<Chat | null>(null);
@@ -23,6 +24,10 @@ const ChatConversation = () => {
   const router = useRouter();
   const params = useSearchParams();
   const id = params.get("id");
+
+  const {
+    user,
+  } = useAuthContext();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(e.target.value);
@@ -44,12 +49,13 @@ const ChatConversation = () => {
 
     setIsProcessing(true);
 
-    const historyWithoutFileData = chat?.history.map((history) => ({
-      role: history.role,
-      parts: history.parts.map((part) => ({
-        text: part.text,
-      })),
-    }));
+    const historyWithoutFileData = chat?.history.filter((history) => {
+      const parts = history.parts.filter((part) => {
+        if (part.text) return { text: part.text };
+      });
+
+      if (parts.length > 0) return { role: history.role, parts };
+    });
 
     try {
       const response = await fetch("/api/prompt/start-chat", {
@@ -59,6 +65,14 @@ const ChatConversation = () => {
         },
         body: JSON.stringify({
           history: [
+            {
+              role: Sender.User,
+              parts: [
+                {
+                  text: `Hi, I am ${user?.name}`,
+                }
+              ]
+            },
             ...historyWithoutFileData!,
           ],
           prompt: message,
