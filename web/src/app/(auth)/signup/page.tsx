@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-// import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
 
@@ -20,6 +19,7 @@ import { Label } from '@/components/ui/label';
 // import { useToast } from '@/hooks/use-toast';
 import Error from '@/components/ui/error';
 import PasswordInput from '@/components/ui/password-input';
+import { useAuthContext } from '@/contexts/auth-context.provider';
 
 type SignupFormData = {
   confirmPassword: string;
@@ -38,11 +38,16 @@ const SignupForm = () => {
     formState: { errors },
   } = useForm<SignupFormData>();
   const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  // const [isSubmitting, setIsSubmitting] = useState(false);
 
   const searchParams = useSearchParams();
-  const redirect = searchParams.get('redirect');
+  const redirectUrl = searchParams.get('redirectUrl');
   const router = useRouter();
+
+  const {
+    signUp,
+    loading,
+  } = useAuthContext();
 
   useEffect(() => {
     if (watch('password') !== watch('confirmPassword')) {
@@ -53,8 +58,13 @@ const SignupForm = () => {
   }, [watch('confirmPassword')]);
 
   const onSubmit = async (data: SignupFormData) => {
-    console.log(data);
-
+    await signUp(
+      {
+        name: data.fullName,
+        email: data.email,
+        password: data.password,
+      }
+    );
   };
 
   return (
@@ -130,10 +140,12 @@ const SignupForm = () => {
               )}
             </div>
             <Button className='w-full' onClick={handleSubmit(onSubmit)}>
-              {isSubmitting && (
+              {loading && (
                 <Loader2 className='mr-2 h-4 w-4 animate-spin' />
               )}
-              Create an account
+              {
+                loading ? "Creating account..." : "Create an account"
+              }
             </Button>
           </div>
           <div className='mt-4 text-center text-sm'>
