@@ -4,7 +4,7 @@ import React from "react";
 import { FaRunning } from "react-icons/fa";
 import { ModeToggle } from "@/components/toogle";
 import { useRouter } from "next/navigation";
-import ROUTES from "@/lib/constants/routes";
+import { ROUTES } from "@/lib/constants/constants";
 
 const FEATURE_CARDS = [
   {
