@@ -7,6 +7,7 @@ const ROUTES = {
   PERSONAL_CARE_AI: "/personal-care-ai",
   CHATS: "/chat",
   USER_SETTINGS: "/user-settings",
+  DIET_PLAN: "/diet-plan",
 };
 
 export default ROUTES;
