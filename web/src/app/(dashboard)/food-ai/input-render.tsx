@@ -12,25 +12,25 @@ const InputRender: React.FC<InputRenderProps> = ({
     return (
       <FeatureCard1 />
     )
-  };
+  }
 
   if (id === '2') {
     return (
       <FeatureCard2 />
     )
-  };
+  }
 
   if (id === '3') {
     return (
       <FeatureCard3 />
     )
-  };
+  }
 
   if (id === '7') {
     return (
       <FeatureCard7 />
     )
-  };
+  }
 
   return (
     <div>

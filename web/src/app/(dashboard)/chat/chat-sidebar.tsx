@@ -6,7 +6,7 @@ import { getChatsByUserId } from "@/firebase/chat-db-requests";
 import { Chat, ChatType } from "@/lib/types/chat";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 const ChatSidebar = () => {
   const [chats, setChats] = useState<Chat[]>([]);
@@ -15,7 +15,7 @@ const ChatSidebar = () => {
   const router = useRouter();
   const userId = "test-user-id"; // TODO: Fetch userId from getUser
 
-  const fetchChatsByUserId = async (userId: string) => {
+  const fetchChatsByUserId = useCallback(async (userId: string) => {
     const response = await getChatsByUserId(userId);
 
     setChats(response);
@@ -23,17 +23,17 @@ const ChatSidebar = () => {
     setFilteredChats(response);
 
     if (filteredResponse.length !== 0) router.replace(`/chat?id=${filteredResponse[0].id}`);
-  }
+  }, [selectedType, router]);
 
   useEffect(() => {
     const filteredResponse = chats.filter(chat => chat.type === selectedType);
     setFilteredChats(filteredResponse);
-  }, [selectedType]);
+  }, [selectedType, chats]);
 
   useEffect(() => {
     if (!userId) return;
     fetchChatsByUserId(userId);
-  }, [userId]);
+  }, [userId, fetchChatsByUserId]);
 
   return (
     <nav className="w-1/5 bg-[#212121]  shadow-md overflow-y-auto">

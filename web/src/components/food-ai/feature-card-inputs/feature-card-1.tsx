@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const FeatureCard1 = () => {
-  const [image, setImage] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [prompt, setPrompt] = useState<string>("");
   const router = useRouter();
@@ -63,11 +62,16 @@ const FeatureCard1 = () => {
     router.push(`/chat?id=${chatId}`);
   };
 
+  const handleImageUpload = () => {
+    // TODO: Implement image upload functionality
+    console.log("Image upload functionality not yet implemented");
+  };
+
   return (
     <div className="w-full flex flex-col gap-4">
       <div className="flex gap-4 items-center">
         <Button
-          onClick={() => { }}
+          onClick={handleImageUpload}
           variant="app-primary"
         >
           Upload Image

@@ -1,9 +1,7 @@
 'use client';
 
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import MarkdownContent from "@/components/ui/markdown-content";
 import { getChatById, updateChatById } from "@/firebase/chat-db-requests";
 
 import { WEB_APP_NAME } from "@/lib/constants/web";
@@ -60,7 +58,7 @@ const ChatConversation = () => {
       const data = await response.json();
 
       const updatedMessages = [
-        ...chat?.messages!,
+        ...(chat?.messages ?? []),
         { sender: Sender.User, content: message },
         { sender: Sender.AI, content: data.message },
       ];

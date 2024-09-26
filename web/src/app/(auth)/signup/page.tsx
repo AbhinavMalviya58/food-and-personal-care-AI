@@ -1,9 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-// import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
 
@@ -17,9 +14,9 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-// import { useToast } from '@/hooks/use-toast';
 import Error from '@/components/ui/error';
 import PasswordInput from '@/components/ui/password-input';
+import { useForm } from 'react-hook-form';
 
 type SignupFormData = {
   confirmPassword: string;
@@ -29,8 +26,6 @@ type SignupFormData = {
 };
 
 const SignupForm = () => {
-  // const toast = useToast;
-
   const {
     register,
     handleSubmit,
@@ -40,21 +35,26 @@ const SignupForm = () => {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const searchParams = useSearchParams();
-  const redirect = searchParams.get('redirect');
-  const router = useRouter();
+  const password = watch('password');
+  const confirmPassword = watch('confirmPassword');
 
   useEffect(() => {
-    if (watch('password') !== watch('confirmPassword')) {
+    if (password !== confirmPassword) {
       setError('Passwords do not match');
     } else {
       setError(null);
     }
-  }, [watch('confirmPassword')]);
+  }, [password, confirmPassword]);
 
   const onSubmit = async (data: SignupFormData) => {
+    setIsSubmitting(true);
     console.log(data);
-
+    // Here you would typically handle the form submission
+    // For example, sending the data to an API
+    // After submission, you might want to redirect:
+    // const redirectPath = searchParams.get('redirect') || '/dashboard';
+    // router.push(redirectPath);
+    setIsSubmitting(false);
   };
 
   return (
@@ -109,7 +109,7 @@ const SignupForm = () => {
                   },
                 })}
               />
-              {errors.password && <Error text={errors.password.message!} />}
+              {errors.password && <Error text={errors.password.message || ''} />}
             </div>
             <div className='grid gap-2'>
               <Label htmlFor='confirmPassword'>Confirm Password</Label>

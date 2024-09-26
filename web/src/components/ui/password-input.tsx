@@ -2,8 +2,8 @@ import React, { useState, forwardRef } from 'react';
 import { Input } from './input';
 import { Eye, EyeOff } from 'lucide-react';
 
-interface PasswordInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {}
+// Removed the empty interface as it's equivalent to its supertype
+type PasswordInputProps = React.InputHTMLAttributes<HTMLInputElement>;
 
 const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
   (props, ref) => {
