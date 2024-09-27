@@ -14,6 +14,7 @@ import { UserChat } from "./userChat";
 import { AiChat } from "./aiChat";
 import { ROUTES } from "@/lib/constants/constants";
 import { useAuthContext } from "@/contexts/auth-context.provider";
+import { AI } from "@/lib/types/prompt";
 
 const ChatConversation = () => {
   const [chat, setChat] = useState<Chat | null>(null);
@@ -76,6 +77,7 @@ const ChatConversation = () => {
             ...historyWithoutFileData!,
           ],
           prompt: message,
+          ai: AI.FOOD,
         }),
       });
 
