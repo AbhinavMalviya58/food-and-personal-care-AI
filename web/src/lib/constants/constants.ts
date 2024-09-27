@@ -10,6 +10,7 @@ export const PROTECTED_ROUTES = [
   "/user-settings",
   "/food-ai",
   "/personal-care-ai",
+  "/diet-plan",
 ];
 export const AUTH_ROUTES = ["/signin", "/signup"];
 
