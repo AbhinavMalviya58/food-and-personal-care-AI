@@ -21,35 +21,37 @@ import { ArrowLeft, ArrowRight, Send } from "lucide-react"
 import { Progress } from '@/components/ui/progress';
 import { Textarea } from '@/components/ui/textarea';
 
-const PersonalCareFormSchema = z.object({
+const DietPlanFormSchema = z.object({
   age: z.coerce.number().min(6, { message: "Age must be at least 6" }).max(70, { message: "Age must be no more than 70" }),
   weight: z.coerce.number().positive({ message: "Weight must be a positive number" }),
   height: z.coerce.number().positive({ message: "Height must be a positive number" }),
-  goal: z.enum(["weightLoss", "weightGain", "weightMaintain", "muscleGain", "muscleMaintenance"]),
+  goal: z.enum(["weightLoss", "weightGain", "weightMaintain", "muscleGain", "muscleMaintain"]),
   preference: z.enum(["Veg", "Non-Veg", "Vegan"]),
-  timeToAchieve: z.coerce.number().positive({ message: "Time must be a positive number" }),
-  additionalNote: z.string().optional()
+  targetTime: z.coerce.number().positive({ message: "Time must be a positive number" }),
+  targetWeight: z.coerce.number().positive({ message: "Weight must be a positive number" }),
+  additionalNotes: z.string().optional()
 });
 
-type PersonalCareFormValues = z.infer<typeof PersonalCareFormSchema>;
+type DietPlanFormValues = z.infer<typeof DietPlanFormSchema>;
 
 const MultiPageForm = () => {
   const [page, setPage] = useState(0);
 
-  const form = useForm<PersonalCareFormValues>({
-    resolver: zodResolver(PersonalCareFormSchema),
+  const form = useForm<DietPlanFormValues>({
+    resolver: zodResolver(DietPlanFormSchema),
     defaultValues: {
       age: 0,
       weight: 0,
       height: 0,
       goal: "weightLoss",
       preference: "Veg",
-      timeToAchieve: 0,
-      additionalNote: ""
+      targetTime: 0,
+      targetWeight: 0,
+      additionalNotes: ""
     }
   });
 
-  const onSubmit = (values: PersonalCareFormValues) => {
+  const onSubmit = (values: DietPlanFormValues) => {
     console.log(values);
   };
 
@@ -69,11 +71,11 @@ const MultiPageForm = () => {
             <FormField
               control={form.control}
               name="age"
-              render={({ field }) => (
+              render={() => (
                 <FormItem>
                   <FormLabel>Age</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your age" {...field} />
+                    <Input placeholder="Enter your age" {...form.register('age')} />
                   </FormControl>
                   <FormDescription>
                     Your current age in years.
@@ -85,11 +87,11 @@ const MultiPageForm = () => {
             <FormField
               control={form.control}
               name="weight"
-              render={({ field }) => (
+              render={() => (
                 <FormItem>
-                  <FormLabel>Weight (kg)</FormLabel>
+                  <FormLabel>Weight (in kgs)</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your weight" {...field} />
+                    <Input placeholder="Enter your weight" {...form.register('weight')} />
                   </FormControl>
                   <FormDescription>
                     Your current weight in kilograms.
@@ -101,11 +103,11 @@ const MultiPageForm = () => {
             <FormField
               control={form.control}
               name="height"
-              render={({ field }) => (
+              render={() => (
                 <FormItem>
-                  <FormLabel>Height (cm)</FormLabel>
+                  <FormLabel>Height (in centimeters)</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your height" {...field} />
+                    <Input placeholder="Enter your height" {...form.register('height')} />
                   </FormControl>
                   <FormDescription>
                     Your height in centimeters.
@@ -134,7 +136,9 @@ const MultiPageForm = () => {
                     <SelectContent>
                       <SelectItem value="weightLoss">Weight Loss</SelectItem>
                       <SelectItem value="weightGain">Weight Gain</SelectItem>
-                      <SelectItem value="weightMaintain">Weight Maintenance</SelectItem>
+                      <SelectItem value="weightMaintain">Weight Maintain</SelectItem>
+                      <SelectItem value="muscleGain">Muscle Gain</SelectItem>
+                      <SelectItem value="muscleMaintain">Muscle Maintain</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormDescription>
@@ -146,15 +150,31 @@ const MultiPageForm = () => {
             />
             <FormField
               control={form.control}
-              name="timeToAchieve"
-              render={({ field }) => (
+              name="targetWeight"
+              render={() => (
                 <FormItem>
-                  <FormLabel>Target Timeline (days)</FormLabel>
+                  <FormLabel>Target Weight (in kgs)</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter target days" {...field} />
+                    <Input placeholder="Enter target weight" {...form.register('targetWeight')} />
                   </FormControl>
                   <FormDescription>
-                    Estimated time to achieve your goal in days.
+                    Estimated weight you want to achieve in kilograms.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="targetTime"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Target Timeline (in months)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter target months" {...form.register('targetTime')} />
+                  </FormControl>
+                  <FormDescription>
+                    Estimated time to achieve your goal in months.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -192,15 +212,15 @@ const MultiPageForm = () => {
             />
             <FormField
               control={form.control}
-              name="additionalNote"
-              render={({ field }) => (
+              name="additionalNotes"
+              render={() => (
                 <FormItem>
                   <FormLabel>Additional Notes</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Any additional information or specific requirements"
                       className="resize-none"
-                      {...field}
+                      {...form.register('additionalNotes')}
                     />
                   </FormControl>
                   <FormDescription>
@@ -224,7 +244,7 @@ const MultiPageForm = () => {
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>Persaonalized Diet Plan</CardTitle>
+        <CardTitle>Personalized Diet Plan</CardTitle>
         <CardDescription>Let's create a tailored plan for your health journey</CardDescription>
       </CardHeader>
       <CardContent>
