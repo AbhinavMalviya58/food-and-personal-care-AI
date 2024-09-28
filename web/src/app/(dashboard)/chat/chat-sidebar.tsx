@@ -50,7 +50,7 @@ const ChatSidebar = () => {
   if (!user) return null; // TODO: Add a loading spinner
 
   return (
-    <nav className="w-1/5 bg-[#212121] flex flex-col shadow-md overflow-y-auto pb-8">
+    <nav className="w-1/5 bg-foreground flex flex-col shadow-md overflow-y-auto pb-8">
       <div className="sticky top-0 z-10 border-b border-gray-200">
         <h1 className="font-bold text-2xl p-6">Chat History</h1>
         <Select
