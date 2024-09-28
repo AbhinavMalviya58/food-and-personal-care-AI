@@ -12,7 +12,7 @@ const InputRender: React.FC<InputRenderProps> = ({
     return (
       <FeatureCard1 />
     )
-  };
+  }
 
   if (id === '2') {
     return (
