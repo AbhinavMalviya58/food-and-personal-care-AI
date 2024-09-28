@@ -73,7 +73,7 @@ const ChatSidebar = () => {
         {filteredChats.length !== 0 ? filteredChats.map((chat) => (
           <li key={chat.id}>
             <Link href={`/chat?id=${chat.id}`}>
-              <Card className="hover:bg-gray-500 transition duration-150 ease-in-out">
+              <Card className={`${chat.id === id ? "bg-app-primary hover:bg-opacity-80" : "bg-gray-2 hover:bg-gray-500"}  transition duration-150 ease-in-out`}>
                 <CardContent className="p-4">
                   <span className="">{chat.title}</span>
                 </CardContent>

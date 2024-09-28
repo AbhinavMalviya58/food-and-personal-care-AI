@@ -1,3 +1,4 @@
+import MarkdownContent from "@/components/ui/markdown";
 import { ChatHistoryPart } from "@/lib/types/chat";
 import Image from "next/image";
 
@@ -25,8 +26,10 @@ export const UserChat = ({
 
           if (part.text && part.text !== "") {
             return (
-              <div key={index} className="p-4">
-                <span className="text-white text-lg">{part.text}</span>
+              <div key={index} className="-mt-4">
+                <MarkdownContent
+                  markdown={parts.map((part) => part.text).join("\n")}
+                />
               </div>
             );
           }
