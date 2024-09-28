@@ -1,6 +1,6 @@
 import MultiPageForm from "./form";
 
-const PersonalCarePage = () => {
+const DietPlanPage = () => {
   return (
     <div className="flex justify-center items-center h-screen">
       <MultiPageForm />
@@ -8,4 +8,4 @@ const PersonalCarePage = () => {
   );
 }
 
-export default PersonalCarePage;
+export default DietPlanPage;

@@ -34,7 +34,7 @@ type FeatureCard = {
 }
 
 const FoodPage = () => {
-  const [selectedCard, setSelectedCard] = useState<FeatureCard>();
+  const [selectedCard, setSelectedCard] = useState<FeatureCard>(FOOD_AI_FEATURE_CARDS[0]);
 
   const handleCardSelection = (card: FeatureCard) => {
     setSelectedCard(card);

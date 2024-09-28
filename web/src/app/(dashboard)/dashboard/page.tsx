@@ -58,7 +58,7 @@ const Dashboard = () => {
               FEATURE_CARDS.map((card) => (
                 <div
                   key={card.id}
-                  className={`flex min-h-24 items-center justify-center text-star-white cursor-pointer p-5 rounded-lg border-4 border-app-primary`}
+                  className={`flex min-h-24 items-center justify-center text-star-white cursor-pointer p-5 rounded-lg border-4 hover:border-gray-2`}
                   onClick={() => handleCardSelection(card)}
                 >
                   <p className="text-center text-base">{card.description}</p>
