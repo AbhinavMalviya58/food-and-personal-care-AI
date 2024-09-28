@@ -131,7 +131,6 @@ const FeatureCard1 = () => {
         /> */}
         <UploadButton
           endpoint="imageUploader"
-
           onClientUploadComplete={handleUploadComplete}
           onUploadError={(error: Error) => alert(`Error: ${error.message}`)}
           className="text-app-primary hover:text-app-primary/90"

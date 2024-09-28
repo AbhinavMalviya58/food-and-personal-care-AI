@@ -1,4 +1,4 @@
-import { genAI } from "@/lib/constants/gemine";
+import { genAI } from "@/lib/constants/gemini";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
