@@ -20,13 +20,34 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ArrowLeft, ArrowRight, Send } from "lucide-react"
 import { Progress } from '@/components/ui/progress';
 import { Textarea } from '@/components/ui/textarea';
+import { Gender, Goal, Preference } from '@/lib/types/diet-plan';
+import { createChat } from '@/firebase/chat-db-requests';
+import { useAuthContext } from '@/contexts/auth-context.provider';
+import { ChatType, Sender } from '@/lib/types/chat';
+import { useRouter } from 'next/navigation';
 
 const DietPlanFormSchema = z.object({
   age: z.coerce.number().min(6, { message: "Age must be at least 6" }).max(70, { message: "Age must be no more than 70" }),
   weight: z.coerce.number().positive({ message: "Weight must be a positive number" }),
   height: z.coerce.number().positive({ message: "Height must be a positive number" }),
-  goal: z.enum(["weightLoss", "weightGain", "weightMaintain", "muscleGain", "muscleMaintain"]),
-  preference: z.enum(["Veg", "Non-Veg", "Vegan"]),
+  gender: z.enum([
+    Gender.MALE,
+    Gender.FEMALE,
+    Gender.OTHERS,
+  ]),
+  goal: z.enum([
+    Goal.GAIN_WEIGHT,
+    Goal.LOSE_WEIGHT,
+    Goal.MAINTAIN_WEIGHT,
+    Goal.GAIN_MUSCLE,
+    Goal.MAINTAIN_MUSCLE,
+  ]),
+  preference: z.enum([
+    Preference.VEG,
+    Preference.NON_VEG,
+    Preference.VEGAN,
+    Preference.EGGETARIAN,
+  ]),
   targetTime: z.coerce.number().positive({ message: "Time must be a positive number" }),
   targetWeight: z.coerce.number().positive({ message: "Weight must be a positive number" }),
   additionalNotes: z.string().optional()
@@ -36,6 +57,12 @@ type DietPlanFormValues = z.infer<typeof DietPlanFormSchema>;
 
 const MultiPageForm = () => {
   const [page, setPage] = useState(0);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const router = useRouter();
+
+  const {
+    user,
+  } = useAuthContext();
 
   const form = useForm<DietPlanFormValues>({
     resolver: zodResolver(DietPlanFormSchema),
@@ -43,16 +70,69 @@ const MultiPageForm = () => {
       age: 0,
       weight: 0,
       height: 0,
-      goal: "weightLoss",
-      preference: "Veg",
+      gender: Gender.MALE,
+      goal: Goal.LOSE_WEIGHT,
+      preference: Preference.VEG,
       targetTime: 0,
       targetWeight: 0,
       additionalNotes: ""
     }
   });
 
-  const onSubmit = (values: DietPlanFormValues) => {
-    console.log(values);
+  const onSubmit = async (values: DietPlanFormValues) => {
+    setIsProcessing(true);
+
+    const response = await fetch("/api/prompt/diet-plan", {
+      method: "POST",
+      body: JSON.stringify({
+        ...values,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      setIsProcessing(false);
+      return;
+    }
+
+    const data = await response.json();
+
+    // Diet Plan Details in Table Markdown
+    const userDietPlanDetails = `## Diet Plan Details \n * Age - ${values.age} \n * Weight - ${values.weight} \n * Height - ${values.height} \n * Gender - ${values.gender} \n * Goal - ${values.goal} \n * Preference - ${values.preference} \n * Target Time - ${values.targetTime} \n * Target Weight - ${values.weight} ${values.additionalNotes ? `\n * Additional Notes - ${values.additionalNotes} \n` : ''}`
+
+    const chatId = await createChat({
+      title: "Diet Plan",
+      userId: user?.id ?? "test-user-id",
+      type: ChatType.FOOD_AI,
+      history: [
+        {
+          role: Sender.User,
+          parts: [
+            {
+              text: userDietPlanDetails,
+            }
+          ],
+        },
+        {
+          role: Sender.Model,
+          parts: [
+            {
+              text: data.message,
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!chatId) {
+      setIsProcessing(false);
+      return;
+    }
+
+    setIsProcessing(false);
+    router.push(`/chat?id=${chatId}`);
   };
 
   const nextPage = () => {
@@ -79,6 +159,31 @@ const MultiPageForm = () => {
                   </FormControl>
                   <FormDescription>
                     Your current age in years.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="gender"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Gender</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your gender" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value={Gender.MALE}>Male</SelectItem>
+                      <SelectItem value={Gender.FEMALE}>Female</SelectItem>
+                      <SelectItem value={Gender.OTHERS}>Others</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    Choose your gender.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -134,11 +239,11 @@ const MultiPageForm = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="weightLoss">Weight Loss</SelectItem>
-                      <SelectItem value="weightGain">Weight Gain</SelectItem>
-                      <SelectItem value="weightMaintain">Weight Maintain</SelectItem>
-                      <SelectItem value="muscleGain">Muscle Gain</SelectItem>
-                      <SelectItem value="muscleMaintain">Muscle Maintain</SelectItem>
+                      <SelectItem value={Goal.LOSE_WEIGHT}>Weight Loss</SelectItem>
+                      <SelectItem value={Goal.GAIN_WEIGHT}>Weight Gain</SelectItem>
+                      <SelectItem value={Goal.MAINTAIN_MUSCLE}>Weight Maintain</SelectItem>
+                      <SelectItem value={Goal.GAIN_MUSCLE}>Muscle Gain</SelectItem>
+                      <SelectItem value={Goal.MAINTAIN_MUSCLE}>Muscle Maintain</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormDescription>
@@ -198,9 +303,10 @@ const MultiPageForm = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Veg">Vegetarian</SelectItem>
-                      <SelectItem value="Non-Veg">Non-Vegetarian</SelectItem>
-                      <SelectItem value="Vegan">Vegan</SelectItem>
+                      <SelectItem value={Preference.VEG}>Vegetarian</SelectItem>
+                      <SelectItem value={Preference.NON_VEG}>Non-Vegetarian</SelectItem>
+                      <SelectItem value={Preference.VEGAN}>Vegan</SelectItem>
+                      <SelectItem value={Preference.EGGETARIAN}>Eggetarian</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormDescription>
@@ -267,7 +373,10 @@ const MultiPageForm = () => {
           </Button>
         ) : (
           <Button type="submit" onClick={form.handleSubmit(onSubmit)} className="ml-auto">
-            Submit <Send className="ml-2 h-4 w-4" />
+            {
+              isProcessing ? "Submitting..." : "Submit"
+            }
+            <Send className="ml-2 h-4 w-4" />
           </Button>
         )}
       </CardFooter>
