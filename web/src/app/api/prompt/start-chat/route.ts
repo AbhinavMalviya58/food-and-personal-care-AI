@@ -1,9 +1,11 @@
 import { genAI } from "@/lib/constants/gemine";
+import { AI } from "@/lib/types/prompt";
 import { NextRequest, NextResponse } from "next/server";
+import { SYSTEM_INSTRUCTIONS } from "../explain-ingredients/system-instructions";
 
 export const POST = async (req: NextRequest) => {
   try {
-    const { history, prompt } = await req.json();
+    const { history, prompt, ai } = await req.json();
 
     if (history.length === 0) {
       return NextResponse.json(
@@ -15,7 +17,9 @@ export const POST = async (req: NextRequest) => {
     const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
       systemInstruction:
-        "When analyzing a list of ingredients on a product label, break down each component in a friendly, easy-to-understand way, and in a tabular form. Explain whether each ingredient is good, neutral, or harmful for someone. Provide dietary advice in a supportive tone, suggesting healthier alternatives where needed. Always conclude with a summary that gives clear recommendations while keeping the tone positive and helpful. If possible also try to guess the product.",
+        ai === AI.FOOD
+          ? SYSTEM_INSTRUCTIONS.FOOD_AI
+          : SYSTEM_INSTRUCTIONS.PERSONAL_CARE_AI,
     });
 
     const generationConfig = {

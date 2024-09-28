@@ -13,6 +13,7 @@ export const UserChat = ({
           if (part.fileData) {
             return (
               <Image
+                key={index + part.fileData.fileUri}
                 className="rounded-lg w-[360px]"
                 src={part.fileData.fileUri}
                 alt="User"
@@ -24,8 +25,8 @@ export const UserChat = ({
 
           if (part.text && part.text !== "") {
             return (
-              <div className="p-4">
-                <span key={index} className="text-white text-lg">{part.text}</span>
+              <div key={index} className="p-4">
+                <span className="text-white text-lg">{part.text}</span>
               </div>
             );
           }

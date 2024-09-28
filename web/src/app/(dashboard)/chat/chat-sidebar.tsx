@@ -2,45 +2,23 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useAuthContext } from "@/contexts/auth-context.provider";
-import { getChatsByUserId } from "@/firebase/chat-db-requests";
 import { Chat, ChatType } from "@/lib/types/chat";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
-const ChatSidebar = () => {
-  const [chats, setChats] = useState<Chat[]>([]);
-  const [filteredChats, setFilteredChats] = useState<Chat[]>([]);
-  const [selectedType, setSelectedType] = useState<ChatType>(ChatType.FOOD_AI);
-  const router = useRouter();
-  const {
-    user
-  } = useAuthContext();
+interface ChatSidebarProps {
+  filteredChats: Chat[];
+  selectedType: ChatType;
+  setSelectedType: (value: ChatType) => void;
+}
 
-  const userId = user?.id;
-
-  const fetchChatsByUserId = async (userId: string) => {
-    const response = await getChatsByUserId(userId);
-
-    setChats(response);
-    const filteredResponse = response.filter((chat) => chat.type === selectedType);
-    setFilteredChats(response);
-
-    if (filteredResponse.length !== 0) router.replace(`/chat?id=${filteredResponse[0].id}`);
-  }
-
-  useEffect(() => {
-    const filteredResponse = chats.filter(chat => chat.type === selectedType);
-    setFilteredChats(filteredResponse);
-  }, [selectedType]);
-
-  useEffect(() => {
-    if (!userId) return;
-    fetchChatsByUserId(userId);
-  }, [userId]);
-
-  if (!user) return null; // TODO: Add a loading spinner
+const ChatSidebar: React.FC<ChatSidebarProps> = ({
+  filteredChats,
+  selectedType,
+  setSelectedType
+}) => {
+  const params = useSearchParams();
+  const id = params.get("id");
 
   return (
     <nav className="w-1/5 bg-[#212121]  shadow-md overflow-y-auto">
@@ -65,8 +43,10 @@ const ChatSidebar = () => {
       <ul className="p-4 space-y-2">
         {filteredChats.length !== 0 ? filteredChats.map((chat) => (
           <li key={chat.id}>
-            <Link href={`/chat?id=${chat.id}`}>
-              <Card className="hover:bg-gray-500 transition duration-150 ease-in-out">
+            <Link href={`/chat?id=${chat.id}`} className="cursor-pointer">
+              <Card
+                className={`${chat.id === id as string ? 'bg-app-primary hover:opacity-85' : 'hover:bg-gray-1'} transition duration-150 ease-in-out`}
+              >
                 <CardContent className="p-4">
                   <span className="">{chat.title}</span>
                 </CardContent>
