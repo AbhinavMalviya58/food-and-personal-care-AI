@@ -29,7 +29,6 @@ type SignupFormData = {
 };
 
 const SignupForm = () => {
-  // const toast = useToast;
 
   const {
     register,
@@ -38,11 +37,7 @@ const SignupForm = () => {
     formState: { errors },
   } = useForm<SignupFormData>();
   const [error, setError] = useState<string | null>(null);
-  // const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // const searchParams = useSearchParams();
-  // const redirectUrl = searchParams.get('redirectUrl');
-  // const router = useRouter();
 
   const {
     signUp,
