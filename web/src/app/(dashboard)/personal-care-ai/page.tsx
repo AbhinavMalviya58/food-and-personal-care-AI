@@ -10,6 +10,10 @@ const PERSONAL_AI_FEATURE_CARDS = [
     id: '1',
     description: "I want to know more about the ingredients in my personal care product.",
   },
+  {
+    id: '2',
+    description: "I want to know a random fact about personal care products.",
+  },
 ];
 
 type FeatureCard = {
