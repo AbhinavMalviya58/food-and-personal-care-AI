@@ -100,7 +100,7 @@ const MultiPageForm = () => {
     const data = await response.json();
 
     // Diet Plan Details in Table Markdown
-    const userDietPlanDetails = `## Diet Plan Details \n * Age - ${values.age} \n * Weight - ${values.weight} \n * Height - ${values.height} \n * Gender - ${values.gender} \n * Goal - ${values.goal} \n * Preference - ${values.preference} \n * Target Time - ${values.targetTime} \n * Target Weight - ${values.weight} ${values.additionalNotes ? `\n * Additional Notes - ${values.additionalNotes} \n` : ''}`
+    const userDietPlanDetails = `## Diet Plan Details \n * Age - ${values.age} \n * Weight - ${values.weight} kgs \n * Height - ${values.height} cms \n * Gender - ${values.gender} \n * Goal - ${values.goal} \n * Preference - ${values.preference} \n * Target Time - ${values.targetTime} months \n * Target Weight - ${values.targetWeight} kgs ${values.additionalNotes ? `\n * Additional Notes - ${values.additionalNotes} \n` : ''}`
 
     const chatId = await createChat({
       title: "Diet Plan",
