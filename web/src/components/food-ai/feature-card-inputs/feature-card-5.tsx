@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 
-const FeatureCard7 = () => {
+const FeatureCard5 = () => {
   return (
     <div className="w-full flex flex-col gap-4">
       <div className="flex gap-4 items-center justify-center">
@@ -18,4 +18,4 @@ const FeatureCard7 = () => {
   );
 };
 
-export default FeatureCard7;
+export default FeatureCard5;

@@ -1,4 +1,4 @@
-import { FeatureCard1, FeatureCard2, FeatureCard3, FeatureCard7 } from "@/components/food-ai/feature-card-inputs";
+import { FeatureCard1, FeatureCard2, FeatureCard3, FeatureCard4, FeatureCard5 } from "@/components/food-ai/feature-card-inputs";
 
 interface InputRenderProps {
   id: string;
@@ -26,9 +26,15 @@ const InputRender: React.FC<InputRenderProps> = ({
     )
   };
 
-  if (id === '7') {
+  if (id === '4') {
     return (
-      <FeatureCard7 />
+      <FeatureCard4 />
+    )
+  }
+
+  if (id === '5') {
+    return (
+      <FeatureCard5 />
     )
   };
 

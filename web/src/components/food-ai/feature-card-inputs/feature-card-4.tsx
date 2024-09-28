@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/contexts/auth-context.provider";
@@ -8,11 +10,10 @@ import { UploadButton, UploadResponse } from "@/lib/uploadthing/uploadthing";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const FeatureCard2 = () => {
+const FeatureCard4 = () => {
   const [imgURL, setImgURL] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [prompt, setPrompt] = useState<string>("");
-  const [healthCondition, setHealthCondition] = useState("");
   const router = useRouter();
 
   const {
@@ -30,14 +31,10 @@ const FeatureCard2 = () => {
     }
   };
 
-  const handleHealthConditionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHealthCondition(e.target.value);
-  }
-
   const onSubmit = async () => {
     setIsProcessing(true);
 
-    const response = await fetch("/api/prompt/analyze-food-for-health-condition", {
+    const response = await fetch("/api/prompt/analyze-nutrients", {
       method: "POST",
       body: JSON.stringify({
         prompt,
@@ -58,7 +55,7 @@ const FeatureCard2 = () => {
     const data = await response.json();
 
     const chatId = await createChat({
-      title: 'Should I eat it?',
+      title: "Analyzed Nutrients",
       userId: user?.id ?? "test-user-id",
       type: ChatType.FOOD_AI,
       history: [
@@ -99,16 +96,6 @@ const FeatureCard2 = () => {
   return (
     <div className="w-full flex flex-col gap-4">
       <div className="flex gap-4 items-center">
-        <span>Health condition</span>
-        <Input
-          className="flex-1"
-          placeholder="e.g. I have diabetes, high blood pressure, etc."
-          type="text"
-          value={healthCondition}
-          onChange={() => handleHealthConditionChange}
-        />
-      </div>
-      <div className="flex gap-4 items-center">
         <UploadButton
           endpoint="imageUploader"
           onClientUploadComplete={handleUploadComplete}
@@ -120,7 +107,7 @@ const FeatureCard2 = () => {
           placeholder="e.g. apple, banana, etc."
           type="text"
           value={prompt}
-          onChange={() => handlePromptChange}
+          onChange={handlePromptChange}
         />
         <Button
           onClick={onSubmit}
@@ -130,12 +117,12 @@ const FeatureCard2 = () => {
         </Button>
       </div>
       <div>
-        <h1 className="text-star-white text-sm">
+        <p className="text-star-white text-sm">
           Upload an image of the food item or write down about the food item.
-        </h1>
+        </p>
       </div>
     </div>
   );
 };
 
-export default FeatureCard2;
+export default FeatureCard4;

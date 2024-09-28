@@ -12,7 +12,7 @@ const FOOD_AI_FEATURE_CARDS = [
   },
   {
     id: '2',
-    description: "I am suffering from a health condition and want to know what I should eat",
+    description: "I am suffering from a health condition and should I eat it?",
   },
   {
     id: '3',
@@ -24,14 +24,6 @@ const FOOD_AI_FEATURE_CARDS = [
   },
   {
     id: '5',
-    description: "I want to learn how I can cook healthier meals",
-  },
-  {
-    id: '6',
-    description: "I want to know about a particular food item",
-  },
-  {
-    id: '7',
     description: "Give me a random food fact",
   },
 ];
