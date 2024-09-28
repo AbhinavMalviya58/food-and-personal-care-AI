@@ -86,7 +86,7 @@ const ChatConversation = () => {
       const data = await response.json();
 
       const updatedHistory = [
-        ...chat?.history!,
+        ...(chat?.history ?? []),
         {
           role: Sender.User,
           parts: [{ text: message }],
