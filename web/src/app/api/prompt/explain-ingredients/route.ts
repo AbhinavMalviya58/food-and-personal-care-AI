@@ -1,7 +1,7 @@
-import { genAI } from "@/lib/constants/gemine";
+import { genAI } from "@/lib/constants/gemini";
 import { AI } from "@/lib/types/prompt";
 import { NextRequest, NextResponse } from "next/server";
-import { SYSTEM_INSTRUCTIONS } from "./system-instructions";
+import { SYSTEM_INSTRUCTIONS } from "@/lib/constants/system-instructions";
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -11,8 +11,8 @@ export const POST = async (req: NextRequest) => {
       model: "gemini-1.5-flash",
       systemInstruction:
         ai === AI.FOOD
-          ? SYSTEM_INSTRUCTIONS.FOOD_AI
-          : SYSTEM_INSTRUCTIONS.PERSONAL_CARE_AI,
+          ? SYSTEM_INSTRUCTIONS.FOOD_AI.ExplainIngredients
+          : SYSTEM_INSTRUCTIONS.PERSONAL_CARE_AI.ExplainIngredients,
     });
 
     const response = await fetch(imageUrl);

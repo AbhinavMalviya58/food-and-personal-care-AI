@@ -1,4 +1,5 @@
-import { genAI } from "@/lib/constants/gemine";
+import { genAI } from "@/lib/constants/gemini";
+import { SYSTEM_INSTRUCTIONS } from "@/lib/constants/system-instructions";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest) => {
@@ -19,8 +20,7 @@ export const POST = async (req: NextRequest) => {
 
     const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
-      systemInstruction:
-        "You are an health and diet plan expert. Generate a diet plan for a person based on their age, weight, height, goal, preference, target time, target weight, and additional notes. Provide a detailed diet plan that includes the number of meals, the type of food, and the quantity of food. The diet plan should be tailored to the person's needs and preferences. Meals per day should be between 3-6. The diet plan should be between 1000-3000 calories per day. Prepare one week of diet plan that can be repeated reach week with different options until the target weight is achieved. Create it in a way that is easy to follow and will help the person achieve their target weight in the specified time frame. The diet plan should be healthy, balanced, and nutritious. Provide a detailed explanation of the diet plan and the reasons behind the food choices. Include any additional information that you think is relevant.",
+      systemInstruction: SYSTEM_INSTRUCTIONS.FOOD_AI.DietPlan,
     });
 
     const result = await model.generateContent([prompt]);
