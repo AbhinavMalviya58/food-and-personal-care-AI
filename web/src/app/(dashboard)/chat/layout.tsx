@@ -4,7 +4,7 @@ export const Chatlayout = ({
   children: React.ReactNode,
 }) => {
   return (
-    <div className="flex h-screen w-screen bg-[#212121]">
+    <div className="flex h-screen w-screen bg-foreground">
       {children}
     </div>
   );

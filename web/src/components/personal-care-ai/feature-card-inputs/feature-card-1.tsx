@@ -111,6 +111,7 @@ const FeatureCard1 = () => {
         />
         <Button
           onClick={onSubmit}
+          disabled={isProcessing || !imgURL && !prompt}
           variant="app-primary"
         >
           {isProcessing ? "Processing..." : "Submit"}

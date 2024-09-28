@@ -3,7 +3,7 @@ import MarkdownContent from "@/components/ui/markdown";
 import { AI } from "@/lib/types/prompt";
 import { useState } from "react";
 
-const FeatureCard5 = () => {
+const FeatureCard2 = () => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [randomFact, setRandomFact] = useState<string>("");
 
@@ -13,7 +13,7 @@ const FeatureCard5 = () => {
     const response = await fetch("/api/prompt/random-fact", {
       method: "POST",
       body: JSON.stringify({
-        ai: AI.FOOD,
+        ai: AI.PERSONAL_CARE,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -47,7 +47,7 @@ const FeatureCard5 = () => {
       }
       <div className="flex gap-4 items-center justify-center">
         <h1 className="text-star-white text-base">
-          Click on the button to get a random food fact.
+          Click on the button to get a random personal care product fact.
         </h1>
         <Button
           onClick={onSubmit}
@@ -65,4 +65,4 @@ const FeatureCard5 = () => {
   );
 };
 
-export default FeatureCard5;
+export default FeatureCard2;
