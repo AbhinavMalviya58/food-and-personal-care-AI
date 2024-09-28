@@ -133,7 +133,6 @@ export const AuthContextProvider = ({
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(firebaseAuth, provider);
-
       return result.user;
     } catch (error: any) {
       toast({
@@ -153,7 +152,6 @@ export const AuthContextProvider = ({
       const userId = userCredential.uid;
       const userRef = doc(db, "users", userId);
       const userDoc = await getDoc(userRef);
-
       if (!userDoc.exists()) {
         const { displayName, email } = userCredential;
         await setDoc(userRef, {
@@ -162,8 +160,13 @@ export const AuthContextProvider = ({
         });
       }
 
-      await createSession(userId);
-      redirect(HOME_ROUTE);
+      createSession(userId).then(() =>{
+        toast({
+          title: "Google sign in Successfully",
+          description: "Successfully signed in with google",
+        })
+        router.replace(HOME_ROUTE);
+      })
     }
   }
 
